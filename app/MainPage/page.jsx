@@ -7,7 +7,7 @@ import { ContentArea } from '../components/ContentArea';
 import { Menu, X } from 'lucide-react';
 
 const App =() => {
-  const [activeView, setActiveView] = useState('TODAY');
+  const [activeView, setActiveView] = useState('DASHBOARD');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Close sidebar on mobile when view changes

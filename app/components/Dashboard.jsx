@@ -319,31 +319,10 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
+  const [activeNav, setActiveNav] = useState("dashboard");
+
   return (
     <div className={`min-h-screen flex bg-slate-50 dark:bg-slate-900 transition-colors relative overflow-x-hidden after:content-[''] after:fixed after:top-[-10%] after:right-[-10%] after:w-[50%] after:h-[50%] after:rounded-full after:blur-[120px] after:z-0 after:transition-all after:duration-1000 ${getBackgroundGlow()}`}>
-      <aside className="w-64 fixed left-0 top-0 bottom-0 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 p-6 hidden lg:flex flex-col z-30">
-        <div className="flex items-center gap-2 mb-10">
-          <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
-            <Brain className="text-white w-5 h-5" />
-          </div>
-          <span className="font-bold text-xl text-slate-900 dark:text-white">MindSync</span>
-        </div>
-        <nav className="space-y-1 flex-1">
-          <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active />
-          <SidebarItem icon={<CalendarCheck />} label="Today’s Plan" />
-          <SidebarItem 
-            icon={<MessageSquare />} 
-            label="Talk to AI" 
-            onClick={() => { setAiOpen(true); logBehavior(user.id, "ai_interact", "sidebar_open"); }} 
-          />
-          <SidebarItem icon={<BarChart3 />} label="Insights" disabled />
-          <SidebarItem icon={<Settings />} label="Settings" />
-        </nav>
-        <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-red-600 rounded-xl transition-colors">
-          <LogOut className="w-5 h-5" /> Logout
-        </button>
-      </aside>
-
       <main className="flex-1 ml-0 lg:ml-64 flex flex-col relative z-10">
         <header className="h-20 fixed top-0 left-0 right-0 lg:left-64 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 flex items-center justify-between z-20">
           <div>

@@ -6,12 +6,11 @@ import { TaskHistory } from './views/TaskHistory';
 import { AIFeedback } from './views/AIFeedback';
 import { Reminders } from './views/Remainders';
 import { Calendar } from './views/Calender';
+import Dashboard from './Dashboard';
 
 const ViewType = {
-  TODAY: 'TODAY',
-  DAILY: 'DAILY',
+  DASHBOARD: 'DASHBOARD',
   ANALYTICS: 'ANALYTICS',
-  HISTORY: 'HISTORY',
   AI_FEEDBACK: 'AI_FEEDBACK',
   REMINDERS: 'REMINDERS',
   CALENDAR: 'CALENDAR'
@@ -20,14 +19,12 @@ const ViewType = {
 export const ContentArea = ({ activeView }) => {
   const renderView = () => {
     switch (activeView) {
-      case ViewType.TODAY: return <TodayTasks />;
-      case ViewType.DAILY: return <DailyTasks />;
+      case ViewType.DASHBOARD: return <Dashboard />;
       case ViewType.ANALYTICS: return <Analytics />;
-      case ViewType.HISTORY: return <TaskHistory />;
       case ViewType.AI_FEEDBACK: return <AIFeedback />;
       case ViewType.REMINDERS: return <Reminders />;
       case ViewType.CALENDAR: return <Calendar />;
-      default: return <TodayTasks />;
+      default: return <Dashboard />;
     }
   };
 
