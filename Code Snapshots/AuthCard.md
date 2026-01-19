@@ -2,59 +2,56 @@
 
 import React, { useState } from "react";
 import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
+Mail,
+Lock,
+Eye,
+EyeOff,
+Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import supabase from "./supabase";
 import { useSnackbar } from "notistack";
 
 const AuthCard = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+const [isSignUp, setIsSignUp] = useState(false);
+const [loading, setLoading] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+const router = useRouter();
+const { enqueueSnackbar } = useSnackbar();
 
-  const router = useRouter();
-  const { enqueueSnackbar } = useSnackbar();
+const [formData, setFormData] = useState({
+firstName: "",
+lastName: "",
+dob: "",
+emailOrPhone: "",
+password: "",
+});
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    dob: "",
-    emailOrPhone: "",
-    password: "",
-  });
+const handleInputChange = (e) => {
+const { name, value } = e.target;
+setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const resetAuthFields = () => {
+setFormData({
+firstName: "",
+lastName: "",
+dob: "",
+emailOrPhone: "",
+password: "",
+});
+};
 
-  const resetAuthFields = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      dob: "",
-      emailOrPhone: "",
-      password: "",
-    });
-  };
-
-  const handleAuth = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleAuth = async (e) => {
+e.preventDefault();
+setLoading(true);
 
     try {
       const contact = formData.emailOrPhone.trim();
       const isEmail = contact.includes("@");
 
       if (isSignUp) {
-        // --- SIGN UP LOGIC ---
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           [isEmail ? "email" : "phone"]: contact,
           password: formData.password,
           options: {
@@ -62,44 +59,17 @@ const AuthCard = () => {
               first_name: formData.firstName,
               last_name: formData.lastName,
               date_of_birth: formData.dob,
-              has_completed_questionnaire: false,
             },
           },
         });
-        
         if (error) throw error;
-
-        enqueueSnackbar("Account created successfully!", {
-          variant: "success",
-        });
-
-        // Always redirect to onboarding after account creation
-        router.push("/onboarding");
-
+        enqueueSnackbar("Success! Check your email if required.", { variant: "success" });
       } else {
-        // --- SIGN IN LOGIC ---
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           [isEmail ? "email" : "phone"]: contact,
           password: formData.password,
         });
-
         if (error) throw error;
-
-        /* -----------------------------
-            REMEMBER ME LOGIC
-        ------------------------------*/
-        if (!rememberMe && data?.session) {
-          sessionStorage.setItem(
-            "sb-session",
-            JSON.stringify(data.session)
-          );
-
-          localStorage.removeItem(
-            `sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID}-auth-token`
-          );
-        }
-
-        // Direct existing users to Dashboard
         router.push("/dashboard");
       }
     } catch (error) {
@@ -107,10 +77,11 @@ const AuthCard = () => {
     } finally {
       setLoading(false);
     }
-  };
 
-  return (
-    <div
+};
+
+return (
+<div
       className="
         w-full max-w-md mx-auto rounded-[2.5rem] border shadow-2xl p-10
         bg-white dark:bg-slate-900
@@ -118,9 +89,9 @@ const AuthCard = () => {
         transition-colors
       "
     >
-      <h2 className="text-3xl font-extrabold mb-2 tracking-tight text-slate-900 dark:text-white">
-        {isSignUp ? "Get Started" : "Welcome Back"}
-      </h2>
+<h2 className="text-3xl font-extrabold mb-2 tracking-tight text-slate-900 dark:text-white">
+{isSignUp ? "Get Started" : "Welcome Back"}
+</h2>
 
       <p className="text-sm mb-8 text-slate-500 dark:text-slate-400">
         {isSignUp ? "Create your account." : "Continue your journey."}
@@ -168,9 +139,7 @@ const AuthCard = () => {
               autoComplete="bday"
               max={new Date(
                 new Date().setFullYear(new Date().getFullYear() - 7)
-              )
-                .toISOString()
-                .split("T")[0]}
+              ).toISOString().split("T")[0]}
               className="
                 w-full h-14 pl-4 rounded-2xl border outline-none
                 bg-slate-50 dark:bg-slate-800
@@ -208,7 +177,7 @@ const AuthCard = () => {
             value={formData.password}
             onChange={handleInputChange}
             placeholder="Password"
-            autoComplete={isSignUp ? "new-password" : "current-password"}
+            autoComplete="new-password"
             className="
               w-full h-14 pl-12 pr-12 rounded-2xl border outline-none
               bg-slate-50 dark:bg-slate-800
@@ -222,25 +191,9 @@ const AuthCard = () => {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
           >
-            {showPassword ? (
-              <EyeOff className="w-5 h-5" />
-            ) : (
-              <Eye className="w-5 h-5" />
-            )}
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         </div>
-
-        {!isSignUp && (
-          <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="accent-indigo-600"
-            />
-            Remember me
-          </div>
-        )}
 
         <button
           type="submit"
@@ -251,13 +204,7 @@ const AuthCard = () => {
             shadow-xl transition-all active:scale-95
           "
         >
-          {loading ? (
-            <Loader2 className="animate-spin" />
-          ) : isSignUp ? (
-            "Create Account"
-          ) : (
-            "Sign In"
-          )}
+          {loading ? <Loader2 className="animate-spin" /> : isSignUp ? "Create Account" : "Sign In"}
         </button>
       </form>
 
@@ -269,13 +216,12 @@ const AuthCard = () => {
           }}
           className="text-indigo-600 font-bold hover:underline"
         >
-          {isSignUp
-            ? "Already have an account? Sign In"
-            : "New to MindSync? Create Account"}
+          {isSignUp ? "Already have an account? Sign In" : "New to MindSync? Create Account"}
         </button>
       </div>
     </div>
-  );
+
+);
 };
 
 export default AuthCard;

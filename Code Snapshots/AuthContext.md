@@ -3,17 +3,17 @@ import React, { createContext, useContext, useEffect, useState, useRef } from "r
 import supabase from "./supabase";
 
 const AuthContext = createContext({
-  user: null,
-  loading: true,
+user: null,
+loading: true,
 });
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const mounted = useRef(true);
+const [user, setUser] = useState(null);
+const [loading, setLoading] = useState(true);
+const mounted = useRef(true);
 
-  useEffect(() => {
-    mounted.current = true;
+useEffect(() => {
+mounted.current = true;
 
     const initializeAuth = async () => {
       try {
@@ -43,13 +43,14 @@ export const AuthProvider = ({ children }) => {
       mounted.current = false;
       subscription?.unsubscribe();
     };
-  }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+}, []);
+
+return (
+<AuthContext.Provider value={{ user, loading }}>
+{children}
+</AuthContext.Provider>
+);
 };
 
 export const useAuth = () => useContext(AuthContext);
