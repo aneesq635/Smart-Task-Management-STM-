@@ -7,6 +7,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Bell
 } from "lucide-react";
 
 export const Sidebar = ({ activeView, onViewChange, isOpen }) => {
@@ -79,6 +80,12 @@ export const Sidebar = ({ activeView, onViewChange, isOpen }) => {
           view="SETTINGS"
         />
       </nav>
+
+       <SidebarItem
+          icon={<Bell className="w-5 h-5" />}
+          label="Remainders"
+          view="REMAINDERS"
+        />
 
       {/* Logout */}
       <button

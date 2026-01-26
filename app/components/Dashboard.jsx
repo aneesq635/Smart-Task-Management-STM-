@@ -319,7 +319,7 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const [activeNav, setActiveNav] = useState("dashboard");
+ 
 
   return (
     <div className={`min-h-screen flex bg-slate-50 dark:bg-slate-900 transition-colors relative overflow-x-hidden after:content-[''] after:fixed after:top-[-10%] after:right-[-10%] after:w-[50%] after:h-[50%] after:rounded-full after:blur-[120px] after:z-0 after:transition-all after:duration-1000 ${getBackgroundGlow()}`}>
